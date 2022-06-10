@@ -1,16 +1,23 @@
 use actix_web::{middleware, web, App, HttpServer};
+extern crate anyhow;
 use dotenv::dotenv;
-use std::env;
 
+mod db;
 mod middlewares;
 mod repositories;
 
-#[actix_rt::main]
-async fn main() -> std::io::Result<()> {
+#[actix_web::main]
+async fn main() -> anyhow::Result<()> {
+    // Getting env variables
     dotenv().expect(".env file not found");
     let api_address: &str =
-        &env::var("API_ADDRESS").expect("API_ADDRESS env var not foud in .env file");
+        &std::env::var("API_ADDRESS").expect("API_ADDRESS env var not foud in .env file");
     println!("API will run on: {}", api_address);
+
+    // Init DB
+    db::init().await;
+
+    // Run API
     HttpServer::new(|| {
         App::new()
             .wrap(middleware::Compress::default())
@@ -19,5 +26,6 @@ async fn main() -> std::io::Result<()> {
     })
     .bind(api_address)?
     .run()
-    .await
+    .await?;
+    Ok(())
 }
