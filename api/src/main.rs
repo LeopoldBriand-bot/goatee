@@ -1,16 +1,17 @@
-use actix_web::{App, HttpServer};
-extern crate dotenv;
-mod routes;
+use actix_web::{middleware, web, App, HttpServer};
 
-#[actix_web::main]
+mod middlewares;
+mod repositories;
+
+#[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    dotenv::dotenv().expect("Failed to read .env file");
     HttpServer::new(|| {
         App::new()
-            .service(routes::test::test)
-            .service(routes::test::echo)
+            .wrap(middleware::Compress::default())
+            .wrap(middleware::Logger::default())
+            .service(web::scope("/test").configure(repositories::test::init_routes))
     })
-    .bind("0.0.0.0:3000")?
+    .bind("0.0.0.0:3001")?
     .run()
     .await
 }
