@@ -1,7 +1,7 @@
 use crate::repositories::test::{ITestRepository, TestRepository};
 use actix_web::{get, web, HttpResponse};
 
-#[get("/")]
+#[get("/")] // This will reponse every call on API_ADDRESS/test/
 async fn hello() -> HttpResponse {
     let _repository: TestRepository = TestRepository {};
     let resp = _repository.test();
