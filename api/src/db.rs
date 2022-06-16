@@ -1,7 +1,7 @@
 use mongodb::{options::ClientOptions, Client, Database};
 use once_cell::sync::OnceCell;
 
-static DB: OnceCell<Database> = OnceCell::new(); // Call database with: DB.get().unwrap()
+pub static DB: OnceCell<Database> = OnceCell::new(); // Call database with: DB.get().unwrap()
 
 pub async fn init() {
     // Get env variables.

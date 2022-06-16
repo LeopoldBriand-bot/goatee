@@ -4,6 +4,7 @@ use dotenv::dotenv;
 
 mod db;
 mod middlewares;
+mod models;
 mod repositories;
 
 #[actix_web::main]
@@ -23,6 +24,7 @@ async fn main() -> anyhow::Result<()> {
             .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::default())
             .service(web::scope("/test").configure(repositories::test::init_routes))
+            .service(web::scope("/user").configure(repositories::user::init_routes))
     })
     .bind(api_address)?
     .run()
