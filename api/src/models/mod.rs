@@ -1,3 +1,5 @@
+mod auth;
 mod user;
 
-pub use user::{IRegisterRequest, RegisterRequest, User};
+pub use auth::{Claims, IRegisterRequest, LoginRequest, RegisterRequest};
+pub use user::User;

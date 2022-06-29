@@ -11,6 +11,8 @@ use uuid::Error as UuidError;
 pub enum UserError {
     UserNotFound,
     UserAlreadyExist,
+    TokenError,
+    WrongCredentials,
     MongoError(MongoErr),
     IdError(UuidError),
 }
@@ -21,6 +23,12 @@ impl fmt::Display for UserError {
             UserError::UserNotFound => write!(f, "No user found with this email"),
             UserError::UserAlreadyExist => {
                 write!(f, "A user with this mail is already in the database")
+            }
+            UserError::WrongCredentials => {
+                write!(f, "No user found with this email and password")
+            }
+            UserError::TokenError => {
+                write!(f, "Error while generating token")
             }
             UserError::MongoError(_) => write!(f, "Error from mongo"),
             UserError::IdError(_) => write!(f, "Error from uuid"),
@@ -33,6 +41,8 @@ impl Error for UserError {
         match *self {
             UserError::UserNotFound => None,
             UserError::UserAlreadyExist => None,
+            UserError::WrongCredentials => None,
+            UserError::TokenError => None,
             UserError::MongoError(ref e) => Some(e),
             UserError::IdError(ref e) => Some(e),
         }
@@ -65,6 +75,8 @@ impl ActixResponseError for UserError {
         match *self {
             UserError::UserNotFound => StatusCode::NOT_FOUND,
             UserError::UserAlreadyExist => StatusCode::BAD_REQUEST,
+            UserError::WrongCredentials => StatusCode::BAD_REQUEST,
+            UserError::TokenError => StatusCode::BAD_REQUEST,
             UserError::MongoError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             UserError::IdError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
