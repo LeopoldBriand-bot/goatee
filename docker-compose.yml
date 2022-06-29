@@ -12,6 +12,9 @@ services:
     environment:
       ALLOWED_DOMAINS: 'yourdomain.com'
       SITES: 'yourdomain.com=myapp:80'
+    networks: 
+      - front
+      
 
   mongodb:
     container_name: mongodb
@@ -23,6 +26,8 @@ services:
       MONGO_INITDB_DATABASE: test
     ports:
       - 27017:27017
+    networks: 
+      - back
 
   mongo-express:
     image: mongo-express
@@ -30,17 +35,36 @@ services:
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: mongodb
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=mongodb
+    networks: 
+      - front
+      - back
 
   client:
     build: ./client
     container_name: client
     ports:
       - 80:80
+    networks: 
+      - front
 
   api:
     build: ./api
     container_name: api
     ports:
       - 3000:3000
+    networks: 
+      - front
+      - back
+
+
+networks:
+  back:
+    driver: bridge
+  front:
+    driver: bridge

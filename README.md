@@ -3,6 +3,7 @@
 ## Client
 
 Run with `npm run serve` in client folder.
+Build with `npm run build` in client folder.
 
 ## API
 

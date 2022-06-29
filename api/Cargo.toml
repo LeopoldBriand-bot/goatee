@@ -7,3 +7,16 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4.0.1"
+actix-rt = "2.7.0"
+serde = { version = "1.0", features = ["derive"] } # Used in the Map Data into Structs section
+serde_json = "1.0" # Used to Map json into Data
+bson = "2.1.0"
+dotenv = "0.15"
+mongodb = { version = "2.2.2", features = ["bson-uuid-0_8", "bson-serde_with", "bson-chrono-0_4"] }
+anyhow = "1.0"
+once_cell = "1.12"
+async-trait = "0.1.56" # Used to declare async traits
+uuid = { version = "0.8.2", features = ["v4"] } 
+chrono = { version = "0.4.0", features = ["serde"] }
+jsonwebtoken = "8.1"
+bcrypt = "0.13"
