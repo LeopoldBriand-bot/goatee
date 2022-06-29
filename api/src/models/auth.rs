@@ -1,4 +1,5 @@
 use crate::models::User;
+use bcrypt::{hash, verify, DEFAULT_COST};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -32,12 +33,13 @@ pub trait IRegisterRequest {
 
 impl IRegisterRequest for RegisterRequest {
     fn to_user(&self) -> User {
+        let hashed = hash(self.password.clone(), DEFAULT_COST).unwrap();
         User {
             id: Uuid::new_v4(),
             name: self.name.clone(),
             surname: self.surname.clone(),
             email: self.email.clone(),
-            password: self.password.clone(),
+            password: hashed,
             birth_date: self.birth_date.clone(),
         }
     }
@@ -51,6 +53,7 @@ pub struct LoginRequest {
 
 impl LoginRequest {
     pub fn check_user(&self, user: User) -> bool {
-        self.password == user.password
+        let password = self.password.clone();
+        verify(password, user.password.as_str()).unwrap()
     }
 }
